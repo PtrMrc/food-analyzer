@@ -1,47 +1,21 @@
-from fastapi import APIRouter, File, UploadFile
-import shutil
-import os
-import pdfplumber
-from pdf2image import convert_from_path
-import pytesseract
+import json
+from fastapi import APIRouter, UploadFile, File
+import os, shutil
 
-router = APIRouter(prefix="/pdf", tags=["PDF"])
+from app.config import UPLOAD_DIR
+from app.services.pdf_service import extract_text_from_pdf
+from app.services.llm_service import analyze_text_with_ai
 
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "uploads")
+router = APIRouter()
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.post("/upload/")
-async def upload_pdf(file: UploadFile = File(...)):
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return {"filename": file.filename, "message": "PDF uploaded successfully"}
-
-@router.post("/extract/")
-async def extract_text(file: UploadFile = File(...)):
+@router.post("/analyze-pdf/")
+async def analyze_pdf(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    text = ""
+    text = extract_text_from_pdf(file_path)
+    ai_result = analyze_text_with_ai(text)
 
-    # Try text extraction
-    try:
-        with pdfplumber.open(file_path) as pdf:
-            for page in pdf.pages:
-                text += page.extract_text() or ""
-    except Exception as e:
-        print("pdfplumber error:", e)
-
-    # Fallback to OCR
-    if not text.strip():
-        print("No text found, running OCR...")
-        images = convert_from_path(file_path)
-        for img in images:
-            text += pytesseract.image_to_string(img)
-
-    return {
-        "filename": file.filename,
-        "text_preview": text[:1000],
-        "text_length": len(text)
-    }
+    return json.loads(ai_result)

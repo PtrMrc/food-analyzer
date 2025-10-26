@@ -1,14 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 import os
-
-# Load .env
-load_dotenv()
-
-# Config
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "uploads")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+from app.routes import pdf_routes
 
 # Initialize app
 app = FastAPI(
@@ -25,8 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import routes
-from app.routes import pdf_routes
 app.include_router(pdf_routes.router)
 
 @app.get("/")
