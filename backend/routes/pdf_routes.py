@@ -2,9 +2,9 @@ import json
 from fastapi import APIRouter, UploadFile, File
 import os, shutil
 
-from app.config import UPLOAD_DIR
-from app.services.pdf_service import extract_text_from_pdf
-from app.services.llm_service import analyze_text_with_ai
+from backend.config import UPLOAD_DIR
+from backend.services.pdf_service import extract_text_from_pdf
+from backend.services.llm_service import analyze_text_with_ai
 
 router = APIRouter()
 os.makedirs(UPLOAD_DIR, exist_ok=True)
