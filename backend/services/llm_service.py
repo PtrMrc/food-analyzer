@@ -5,6 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
+print(f"DEBUG: API key exists: {bool(api_key)}")
+print(f"DEBUG: API key length: {len(api_key) if api_key else 0}")
+
+if not api_key:
+    raise ValueError(
+        "GEMINI_API_KEY environment variable is not set! "
+        "Please add it in Railway Variables tab."
+    )
+
 client = genai.Client(api_key=api_key)
 
 def analyze_text_with_ai(text: str) -> dict:
