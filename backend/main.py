@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from backend.routes import pdf_routes
+from routes import pdf_routes
 
 # Initialize app
 app = FastAPI(
