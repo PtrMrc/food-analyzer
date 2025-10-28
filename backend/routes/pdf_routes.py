@@ -3,9 +3,9 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 import os, shutil
 
-from backend.config import UPLOAD_DIR
-from backend.services.pdf_service import extract_text_from_pdf
-from backend.services.llm_service import analyze_text_with_ai
+from config import UPLOAD_DIR
+from services.pdf_service import extract_text_from_pdf
+from services.llm_service import analyze_text_with_ai
 
 router = APIRouter()
 os.makedirs(UPLOAD_DIR, exist_ok=True)
