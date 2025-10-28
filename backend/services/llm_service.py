@@ -1,7 +1,7 @@
 import os
 from google import genai
 
-api_key = os.getenv("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+api_key = os.getenv("GEMINI_API_KEY")
 
 print(f"DEBUG: API key exists: {bool(api_key)}")
 print(f"DEBUG: API key length: {len(api_key) if api_key else 0}")
