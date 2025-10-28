@@ -1,6 +1,5 @@
 import os
 from google import genai
-#import google.generativeai as genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,20 +11,25 @@ def analyze_text_with_ai(text: str) -> dict:
     A következő szövegből gyűjtsd ki ezeket az adatokat:
     -*Allergének*: Glutén, Tojás, Rák, Hal, Földimogyoró, Szója, Tej, Diófélék, Zeller, Mustár
     (Ha egyik sem található, üres listát adj vissza.)
-    -*Tápérték jellemzők*: Energia (kcal), Zsír (g), Szénhidrát (g), Cukor (g), Fehérje (g), Só (g), Nátrium (mg)
-    Ha a tápértékben csak 'só' szerepel, számítsd át nátriummá is (1 g só = 0.393 g nátrium, a nátriumot mg-ban add meg)
+    -*Tápérték jellemzők*: Energia, Zsír, Szénhidrát, Cukor, Fehérje, Só, Nátrium
+    Ha a tápértékben csak 'só' szerepel, számítsd át nátriummá is (1 g só = 0.393 g nátrium, a nátriumot mg-ban add meg).
 
-    Válasz kizárólag érvényes JSON formátumban.
+    FONTOS: A kulcsokban NE legyen egység (pl. "g", "kcal"), csak a név! Az értékek legyenek számok (float vagy null).
 
-  "Allergének": [string, ...],    ha nincs allergén, legyen [] (üres lista)
-  "Tápanyagok":
-     "Energia (kcal)": float | null,
-     "Zsír (g)": float | null,
-     "Szénhidrát (g)": float | null,
-     "Cukor (g)": float | null,
-     "Fehérje (g)": float | null,
-     "Só (g): float | null,
-     "Nátrium (mg)": float | null
+    Válasz kizárólag érvényes JSON formátumban:
+
+    {{
+      "Allergének": ["Glutén", "Tej"],
+      "Tápanyagok": {{
+        "Energia": 450.0,
+        "Zsír": 12.5,
+        "Szénhidrát": 60.0,
+        "Cukor": 5.0,
+        "Fehérje": 8.0,
+        "Só": 1.2,
+        "Nátrium": 471.6
+      }}
+    }}
 
     A szöveg:
     {text}
